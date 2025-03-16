@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="script1.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>Atividade 1</title>
+  </head>
+  <body>
+    <form id="form">
+      <h1>Fomulário de Cadastro:</h1>
+      <label>Nome:</label>
+      <input type="text" id="name" placeholder="Digite seu nome completo" />
+
+      <label>Email:</label>
+      <input type="text" id="email" placeholder="fulano.com" />
+
+      <label>Data Nascimento:</label>
+      <input type="date" id="date" placeholder="dd/mm/aaaa" />
+
+      <label>Telefone Fixo:</label>
+      <input type="text" id="phoneFixo" placeholder="(99)9999-9999" />
+
+      <label>Telefone Celular:</label>
+      <input type="text" id="phoneCel" placeholder="(99)99999-9999" />
+
+      <section class="radio_group">
+        <label>Perfil:</label>
+        <label><input type="radio" name="perfil" id="professor" value="professor"/>Professor</label>
+        <label><input type="radio" name="perfil" id="aluno" value="aluno" />Aluno</label>
+      </section>
+
+      <section class="campo_dados_professor">
+        <label>Área:</label>
+        <input type="text" id="area" placeholder="Digite sua área de atuação" />
+        <label>Matrícula:</label>
+        <input type="text" id="matriculaProf" placeholder="Digite sua matrícula" />
+        <label>Lattes:</label>
+        <input type="text" id="lattes" placeholder="Digite aqui o endereço para seu Lattes"/>
+      </section>
+
+      <section class="campo_dados_aluno">
+        <label>Curso:</label>
+        <input type="text" id="curso" placeholder="Digite seu curso" />
+        <label>Matrícula:</label>
+        <input type="text" id="matriculaAlu" placeholder="Digite sua matrícula" />
+      </section>
+
+      <div class="button-group">
+        <button type="submit" id="submit">Enviar</button>
+        <button type="reset" id="reset">Redefinir</button>
+      </div>
+    </form>
+  </body>
+</html>
