@@ -1,90 +1,112 @@
-const div = document.getElementById("conteudo"); // div na página html
+const div = document.getElementById("conteudo"); // Div na página HTML
 
-function textoTotal(){
-    // Elementos para texto da section
-    const container = document.createElement("section"); // section que se encontra dentro da div
-    const tag = document.createElement("h1");
-    const text = document.createTextNode("Total");
-    const textBox = document.createElement("input"); // caixa de texto do total
-    const botaoReload = document.createElement("button");
-    
-    // Modificando os elementos da página
-    textBox.readOnly = true;
-    textBox.value = manTotal + womanTotal;
-    textBox.setAttribute("style", "font-size: 20px; text-align: center; width: 100px; height: 30px;");
-    botaoReload.innerHTML = 'Reset';
-    botaoReload.setAttribute("id", "reset");
-    botaoReload.setAttribute("style", "width: 80px; height: 30px;");
-    
-    if(div){
-        tag.appendChild(text);
-        container.appendChild(tag);
-        container.appendChild(textBox);
-        container.appendChild(botaoReload);   
-        div.appendChild(container);
-    }
-    
-    document.getElementById("reset").addEventListener("click", () => {
-        textBox.value = 0;
-    })
+let textBoxTotal, textBoxMale, textBoxFemale; // Campos de entrada para total, homens e mulheres
+
+function criarTotal() {
+    const container = document.createElement("section");
+    container.classList.add("container");
+
+    const tagTotal = document.createElement("h2");
+    tagTotal.innerText = "Total de Pessoas";
+
+    textBoxTotal = document.createElement("input");
+    textBoxTotal.setAttribute("id", "total");
+    textBoxTotal.readOnly = true;
+    textBoxTotal.value = 0;
+
+    const botaoReset = document.createElement("button");
+    botaoReset.setAttribute("id", "reset");
+    botaoReset.setAttribute("style", "display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: none; border: none; cursor: pointer;");
+
+    const iconReset = document.createElement("img");
+    iconReset.src = "https://img.icons8.com/ios-filled/50/000000/recurring-appointment.png"; // Ícone de reset
+    iconReset.setAttribute("alt", "Reset");
+    iconReset.setAttribute("style", "width: 30px; height: 30px;");
+
+    botaoReset.appendChild(iconReset);
+    botaoReset.addEventListener("click", () => {
+        textBoxMale.value = 0;
+        textBoxFemale.value = 0;
+        textBoxTotal.value = 0;
+    });
+
+    const totalContainer = document.createElement("div");
+    totalContainer.setAttribute("id", "total-container");
+    totalContainer.appendChild(textBoxTotal);
+    totalContainer.appendChild(botaoReset);
+
+    container.appendChild(tagTotal);
+    container.appendChild(totalContainer);
+    div.appendChild(container);
 }
 
-// Função para criar as seções de contagem de pessoas
-function contagemPessoas(){
-    // Section para Homem e Mulher, filhas de outra
-    const sectionPai = document.createElement("section");
-    const sectionMale = document.createElement("section");
-    const sectionFemale = document.createElement("section");
-    sectionMale.setAttribute("id", "male");
-    sectionFemale.setAttribute("id", "female");
+function criarContadores() {
+    const peopleContainer = document.createElement("div");
+    peopleContainer.classList.add("people-container");
 
-    // input
-    const manTotal = document.createElement("input");
-    const womanTotal = document.createElement("input");
-    manTotal.readOnly = true;
-    womanTotal.readOnly = true;
+    function criarPessoa(tipo, imgSrc) {
+        const section = document.createElement("section");
+        section.classList.add("person");
 
-    // imagens
-    const manImage = document.createElement("img");
-    manImage.src = 'https://img.icons8.com/?size=100&id=11214&format=png&color=000000';
-    manImage.setAttribute("style", "width: 200px; height: 200px;");
+        const tag = document.createElement("h3");
+        tag.innerText = tipo;
 
-    const womanImage = document.createElement("img");
-    womanImage.src = 'https://img.icons8.com/?size=100&id=11226&format=png&color=000000';
-    womanImage.setAttribute("style", "width: 200px; height: 200px;");
+        const imagem = document.createElement("img");
+        imagem.src = imgSrc;
 
-    // Adicionando as seções de Homem e Mulher ao Pai
-    sectionMale.appendChild(manImage);
-    sectionMale.appendChild(manTotal);
-    sectionFemale.appendChild(womanImage);
-    sectionFemale.appendChild(womanTotal);
-    sectionPai.appendChild(sectionMale);
-    sectionPai.appendChild(sectionFemale);
-    div.appendChild(sectionPai);
+        const textBox = document.createElement("input");
+        textBox.classList.add("count");
+        textBox.readOnly = true;
+        textBox.value = 0;
 
-    // Função para atribuir botões de incrementar e decrementar
-    function atribuirBotoes(idSection){
-        const section = document.getElementById(idSection); 
+        const buttonsDiv = document.createElement("div");
+        buttonsDiv.classList.add("buttons");
+
         const botaoIncrementar = document.createElement("button");
-        const botaoDecrementar = document.createElement("button");
-
-        botaoDecrementar.innerHTML = 'Remover';
-        botaoIncrementar.innerHTML = 'Adicionar';
-
-        section.appendChild(botaoIncrementar);
-        section.appendChild(botaoDecrementar);
-
-        // Adicionar eventos para os botões
+        botaoIncrementar.classList.add("add");
+        botaoIncrementar.innerHTML = "+";
         botaoIncrementar.addEventListener("click", () => {
             textBox.value = parseInt(textBox.value) + 1;
+            atualizarTotal();
         });
 
+        const botaoDecrementar = document.createElement("button");
+        botaoDecrementar.classList.add("remove");
+        botaoDecrementar.innerHTML = "-";
         botaoDecrementar.addEventListener("click", () => {
-            textBox.value = parseInt(textBox.value) - 1;
+            let valorAtual = parseInt(textBox.value);
+            if (valorAtual > 0) {
+                textBox.value = valorAtual - 1;
+                atualizarTotal();
+            }
         });
+
+        buttonsDiv.appendChild(botaoIncrementar);
+        buttonsDiv.appendChild(textBox);
+        buttonsDiv.appendChild(botaoDecrementar);
+
+        section.appendChild(tag);
+        section.appendChild(imagem);
+        section.appendChild(buttonsDiv);
+
+        if (tipo === "Homens") textBoxMale = textBox;
+        if (tipo === "Mulheres") textBoxFemale = textBox;
+
+        return section;
     }
-    atribuirBotoes('male');
-    atribuirBotoes('female');
+
+    const homens = criarPessoa("Homens", "https://img.icons8.com/?size=100&id=11214&format=png&color=000000");
+    const mulheres = criarPessoa("Mulheres", "https://img.icons8.com/?size=100&id=11226&format=png&color=000000");
+
+    peopleContainer.appendChild(homens);
+    peopleContainer.appendChild(mulheres);
+    div.appendChild(peopleContainer);
 }
-textoTotal();
-contagemPessoas();
+
+function atualizarTotal() {
+    textBoxTotal.value = parseInt(textBoxMale.value) + parseInt(textBoxFemale.value);
+}
+
+// Chamando as funções para criar os elementos na página
+criarTotal();
+criarContadores();
