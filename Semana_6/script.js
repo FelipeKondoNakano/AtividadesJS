@@ -8,7 +8,12 @@ function criarCalculadora(){
     display.type = 'text';
     display.classList.add('display');
     display.disabled = true;
+    display.value = '0';
     calculator.appendChild(display);
+    
+    let currentNumber = "";
+    let previousNumber = null;
+    let operator = null;
     
     // Função para atualizar o display
     function updateDisplay(value){
@@ -17,25 +22,69 @@ function criarCalculadora(){
     
     // Função para limpar o display
     function clearDisplay(){
-        updateDisplay('');
+        currentNumber = "";
+        previousNumber = null;
+        operator = null;
+        updateDisplay('0');
     }
 
-    function calculate(){
-
+    // Função para calcular o resultado
+    function calculate(num1, op, num2){
+        let result;
+        switch (op) {
+            case '+': result = num1 + num2; break;
+            case '-': result = num1 - num2; break;
+            case 'x': result = num1 * num2; break;
+            case '÷': result = num1 / num2; break;
+            case '%': result = num1 % num2; break;
+            default: return;
+        }
+        return result;
     }
 
-    // Função para apresentar os valores e operadores no display
-    function appendToDisplay(value) {
-        updateDisplay(display.value + value);
+    // Função para inverter o sinal
+    function toggleSign() {
+        if (currentNumber !== "") {
+            currentNumber = (parseFloat(currentNumber) * -1).toString();
+            updateDisplay(previousNumber !== null ? previousNumber + " " + operator + " " + currentNumber : currentNumber);
+        }
+    }
+
+    // Função para lidar com entrada de números e operadores
+    function handleInput(value) {
+        if (!isNaN(value) || value === '.') {
+            currentNumber += value;
+            updateDisplay(previousNumber !== null ? previousNumber + " " + operator + " " + currentNumber : currentNumber);
+        } else if (['+', '-', 'x', '÷', '%'].includes(value)) {
+            if (currentNumber !== "") {
+                if (previousNumber !== null && operator !== null) {
+                    previousNumber = calculate(parseFloat(previousNumber), operator, parseFloat(currentNumber));
+                } else {
+                    previousNumber = parseFloat(currentNumber);
+                }
+                operator = value;
+                currentNumber = "";
+                updateDisplay(previousNumber + " " + operator);
+            }
+        } else if (value === '=') {
+            if (previousNumber !== null && operator !== null && currentNumber !== "") {
+                previousNumber = calculate(previousNumber, operator, parseFloat(currentNumber));
+                updateDisplay(previousNumber);
+                currentNumber = "";
+                operator = null;
+            }
+        }
     }
     
     // Criando uma matriz bidimensional para botões da calculadora
     const buttons = [
-        ['7', '8', '9', '÷'],
-        ['4', '5', '6', 'x'],
-        ['1', '2', '3', '-'],
-        ['0', '.', '=', '+']
+        ['AC', '+/-', '%', '÷'],
+        ['7', '8', '9', 'x'],
+        ['4', '5', '6', '-'],
+        ['1', '2', '3', '+'],
+        ['0', '.', '=']
     ];
+    
     // Transforma os textos da matriz acima em botões
     buttons.forEach(row => {
         const buttonRow = document.createElement('div');
@@ -45,38 +94,28 @@ function criarCalculadora(){
             const button = document.createElement('button');
             button.classList.add('button');
             
-            if (buttonText === '=' || buttonText === '/') {
-                button.classList.add('operator');
-            } else if (buttonText === '+') {
+            if (['=', '+', '-', '÷', 'x', '%'].includes(buttonText)) {
                 button.classList.add('operator');
             }
 
             button.textContent = buttonText;
-            button.onclick = () => {
-                if (buttonText === '=') {
-                    calculate();
-                } else if (buttonText === 'C') {
-                    clearDisplay();
-                } else {
-                    appendToDisplay(buttonText);
-                }
-            };
-
+            
+            if (buttonText === 'AC') {
+                button.onclick = clearDisplay;
+            } else if (buttonText === '+/-') {
+                button.onclick = toggleSign;
+            } else {
+                button.onclick = () => handleInput(buttonText);
+            }
+            
             buttonRow.appendChild(button);
         });
 
         calculator.appendChild(buttonRow);
     });
     
-    // Criando o botão de limpar o display
-    const clearButton = document.createElement('button');
-    clearButton.classList.add('button', 'clear');
-    clearButton.textContent = 'AC';
-    clearButton.onclick = clearDisplay;
-    
-    calculator.appendChild(clearButton);
-
     // Adiciona os elementos da calculadora na página principal
     document.getElementById("calculadora").appendChild(calculator);
 }
 
+document.addEventListener("DOMContentLoaded", criarCalculadora);
