@@ -1,0 +1,38 @@
+body {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .letreiro {
+    font-size: 2em;
+    background-color: #111;
+    padding: 20px 40px;
+    border: 2px solid #0f0;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #0f0;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cursor::after {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 1em;
+    background-color: #0f0;
+    margin-left: 5px;
+    animation: blink 1s infinite;
+    vertical-align: bottom;
+  }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
+  }
